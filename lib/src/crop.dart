@@ -85,6 +85,8 @@ class Crop extends StatelessWidget {
   /// [false] by default.
   final bool interactive;
 
+  final VoidCallback? onDrag;
+
   const Crop({
     Key? key,
     required this.image,
@@ -103,6 +105,7 @@ class Crop extends StatelessWidget {
     this.cornerDotBuilder,
     this.fixArea = false,
     this.interactive = false,
+    this.onDrag,
   })  : assert((initialSize ?? 1.0) <= 1.0,
             'initialSize must be less than 1.0, or null meaning not specified.'),
         super(key: key);
@@ -133,6 +136,7 @@ class Crop extends StatelessWidget {
             cornerDotBuilder: cornerDotBuilder,
             fixArea: fixArea,
             interactive: interactive,
+            onDragEnd: onDrag,
           ),
         );
       },
@@ -157,6 +161,7 @@ class _CropEditor extends StatefulWidget {
   final CornerDotBuilder? cornerDotBuilder;
   final bool fixArea;
   final bool interactive;
+  final VoidCallback? onDragEnd;
 
   const _CropEditor({
     Key? key,
@@ -176,6 +181,7 @@ class _CropEditor extends StatefulWidget {
     this.cornerDotBuilder,
     required this.fixArea,
     required this.interactive,
+    this.onDragEnd,
   }) : super(key: key);
 
   @override
@@ -443,7 +449,10 @@ class _CropEditorState extends State<_CropEditor> {
         : Stack(
             children: [
               Listener(
-                onPointerDown: (_) => _pointerNum++,
+                onPointerDown: (_) {
+                  _pointerNum++;
+                  widget.onDragEnd?.call();
+                },
                 onPointerUp: (_) => _pointerNum--,
                 child: GestureDetector(
                   onScaleStart: widget.interactive ? _startScale : null,
