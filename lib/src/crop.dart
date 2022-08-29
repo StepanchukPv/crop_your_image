@@ -449,11 +449,11 @@ class _CropEditorState extends State<_CropEditor> {
         : Stack(
             children: [
               Listener(
-                onPointerDown: (_) {
-                  _pointerNum++;
+                onPointerDown: (_) => _pointerNum++,
+                onPointerUp: (_) {
+                  _pointerNum--;
                   widget.onDragEnd?.call();
                 },
-                onPointerUp: (_) => _pointerNum--,
                 child: GestureDetector(
                   onScaleStart: widget.interactive ? _startScale : null,
                   onScaleUpdate: widget.interactive ? _updateScale : null,
